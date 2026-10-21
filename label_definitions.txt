@@ -5,6 +5,6 @@
 #
 # Delete the examples below and put yours in.
 
-analysis: makes an argument backed by a specific, checkable fact
-hot_take: a confident claim with no support offered
-reaction: an immediate response to something that just happened
+grounded: The post makes a claim and supports it with something specific and checkable, such as a number, a first-hand test, a named source or a concrete detail from the poster's own work.
+hot_take: The post makes a confident claim about AI and offers no support. It might be true, but it's asserted, not argued.
+reaction: The post is a personal emotional response to something that just happened to the poster or near them. It's mostly feeling, not argument.

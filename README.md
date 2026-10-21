@@ -54,33 +54,81 @@
      The decision rule is worth a point on its own and it's the thing most
      people leave out. Every taxonomy has a hardest boundary. Name yours. -->
 
-### `label_one`
+**Scope:** I only label posts from r/ArtificialInteligence that make a claim
+about AI. Pure help requests ("which tool should I use?"), bare news links with
+no commentary, and image/meme posts with only a title are left out when I
+collect, because none of them is a take.
 
-**Definition:**
+### `grounded`
 
-**Example 1:**
->
+**Definition:** The post makes a claim and supports it with something specific
+and checkable: a number, a first-hand test, a named source, or a concrete detail
+from the poster's own work.
 
-**Example 2:**
->
+**Example 1:** *"How I use AI to choose better hotels for less $$$"*
+> I pulled the rates for 43 hotels in Rome, Paris and Barcelona for the same
+> Friday in November and the free cancellation version of the same room cost on
+> average 11% more than the non refundable one
 
-### `label_two`
+**Example 2:** *"Zalando, H&M and About You took 3 different bets on AI fashion imagery"*
+> I work on ecommerce content at a fashion retailer, and most of the AI imagery
+> debate I read assumes the job at risk is the campaign photographer... But for
+> us the campaign is a small part of the budget, most of the money goes on
+> product photos, and every item on the site needs new ones each season.
 
-**Definition:**
+### `hot_take`
 
-**Example 1:**
->
+**Definition:** The post makes a confident claim about AI and offers no support.
+It might be true, but it's asserted, not argued.
 
-**Example 2:**
->
+**Example 1:** *"About AI/human misalignment"*
+> Misalignment won't look like Terminator. It'll look more like an optimization
+> run that treats human survival as distraction to their goal completion.
+
+**Example 2:** *"On Excel there is still all the world finance"*
+> The whole world is worried about the consequences of AI but if it were to
+> collapse Excel collapses the entire world economy in a few minutes
+
+### `reaction`
+
+**Definition:** The post is a personal emotional response to something that just
+happened to the poster or near them. It's mostly feeling, not argument.
+
+**Example 1:** *"Hopeless in Art"*
+> I just heard that my art mentor, who had been working at this company for 8
+> years, got fired. They're only keeping one artist for testing who can use AI,
+> and its cheaper that way. I think Art is screwed by AI, I regretted choosing
+> this path.
+
+**Example 2:** *"AI gone wrong"*
+> Now, college freshman at private college in the Northeast. His first paper was
+> graded as 0. His professor told him it was totally AI generated and he used
+> "big words" he probably couldn't define.
 
 ### The hardest boundary
 
-**Which two labels:**
+**Which two labels:** `grounded` vs `hot_take`
 
-**The decision rule I used every time:**
-<!-- e.g. "If the post names a specific checkable fact, it's `analysis`, even
-     if the tone is heated." -->
+The post that showed me this boundary is *"AI detectors simply don't work"*:
+> I put a test agaisnt multiple software programs that detect AAI-generatedcontent
+> and text... Some of my data showed the detectors flagging my own essays as AI
+> but not the actual AI one
+
+The poster ran a test, which sounds `grounded`. But they never say how many
+essays, which detectors, or what the results were, and the title claims far more
+than the test shows.
+
+**The decision rule I used every time:** Could a reader check the specific
+detail, meaning find it, count it, or repeat it? If yes, and removing that
+detail would leave the claim unsupported, the post is `grounded`. If there is
+no such detail, it's a `hot_take`. Length and tone don't count: a long,
+thoughtful-sounding essay with no checkable detail is still a `hot_take`. By
+this rule, "AI detectors simply don't work" is a `hot_take`.
+
+**Second rule, `reaction` vs `hot_take`:** A post is a `reaction` only if a
+specific recent event set it off ("I just heard...", "his first paper was
+graded..."). An emotional post about AI in general, with no triggering event,
+is a `hot_take`.
 
 
 
