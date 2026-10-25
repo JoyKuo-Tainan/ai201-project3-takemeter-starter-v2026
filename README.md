@@ -230,15 +230,38 @@ opinion, and a post with a checkable detail is the rarer thing.
 
 <!-- Your starting model, your settings, and anything you changed and why. -->
 
-**Base model:**
+**Base model:** `distilbert-base-uncased`
 
-**Settings:** <!-- epochs, learning rate, batch size, seed -->
+**Settings:** 3 epochs, learning rate 2e-5, batch size 16, max length 128
+tokens, seed 7. Trained on an Apple Silicon GPU (MPS), torch 2.14.1.
 
-**Anything I changed from the defaults, and why:**
+**Anything I changed from the defaults, and why:** I kept every
+hyperparameter at its default. With 104 training posts I have no evidence yet
+that a different learning rate or more epochs would help, and changing them
+before I've seen the default run would just be guessing. The one change is the
+seed: 7 instead of the starter's 42. It is one of the three seeds
+(42, 7, 2024) I run next unit, so this result is one of those three, not an
+extra one.
 
-**Split sizes:** <!-- train / val / test, and per-label counts in the test
-split. If a label had fewer than about 8 in test, say so — it explains a lot
-of next unit's variance. -->
+**Split sizes:** stratified 70/15/15 on 150 rows.
+
+| Label | Train | Val | Test |
+|---|---|---|---|
+| `hot_take` | 49 | 11 | 11 |
+| `reaction` | 30 | 6 | 6 |
+| `grounded` | 25 | 6 | 6 |
+| **Total** | 104 | 23 | 23 |
+
+`grounded` and `reaction` each have only 6 posts in test, under the 8 that
+gives a stable F1. One post changing sides moves either label's recall by about
+17 points, so I expect those F1 scores to swing a lot between seeds.
+
+**What the run produced:** accuracy 0.478, macro F1 0.216. The model predicted
+`hot_take` for all 23 test posts, so its accuracy is exactly the `hot_take`
+share of the test split (11/23), and `grounded` and `reaction` both scored F1 0.
+It learned the majority label and nothing else. With 25 `grounded` examples to
+train on and the default 3 epochs, that is not surprising, and it is the main
+thing next unit has to explain.
 
 
 
@@ -253,19 +276,34 @@ of next unit's variance. -->
      workflow and disclosing it costs you nothing. Not disclosing it is the
      problem. -->
 
-**Moment 1**
+**Moment 1: pre-labelling 131 posts**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* I gave Claude my three label definitions and both
+  decision rules (the checkable-detail rule for `grounded` vs `hot_take`, and
+  the triggering-event rule for `reaction` vs `hot_take`) and asked it to label
+  the 131 posts I hadn't labelled cold.
+- *What came back:* a label for every row: 37 `grounded`, 71 `hot_take` and
+  42 `reaction` across the full 150 once my cold rows were added.
+- *What I changed:* TODO: name one or two specific labels you overturned and
+  which rule decided it, and fill in the count in The Dataset ("I changed ___
+  of the 131").
 
-**Moment 2**
+**Moment 2: collecting posts from Arctic Shift**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* TODO: confirm what you asked AI for here. For example,
+  how to get posts out of Reddit when it blocks automated access, or a script
+  to pull the newest 100 posts and 100 comments from Arctic Shift.
+- *What came back:* TODO: what it suggested or wrote.
+- *What I changed:* I didn't keep everything it pulled. Out of 143 usable
+  candidates I dropped 25: mod-removed posts and removal notices, a duplicate
+  of a row I already had, image-only titles, ads, and "thanks" replies, because
+  none of them is a take under my scope rule.
 
-**Pre-labelling disclosure:**
+**Pre-labelling disclosure:** 131 of my 150 rows (87%) were pre-labelled by
+Claude from my written definitions and decision rules. They are marked
+`pre-labelled` in the `note` column. The other 19 rows, marked `cold`, I
+labelled myself before using any tool. I read every pre-labelled row against
+my decision rules and corrected the ones I disagreed with.
 
 <!-- ═══════════════════════ UNIT 6 — THE TEST ═══════════════════════
 
