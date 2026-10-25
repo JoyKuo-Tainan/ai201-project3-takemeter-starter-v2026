@@ -139,45 +139,90 @@ is a `hot_take`.
 <!-- Where you collected from, how you labelled, your counts, and three hard
      cases. -->
 
-**Where the posts came from:**
+**Where the posts came from:** All 150 rows are public posts and comments from
+r/ArtificialInteligence, kept whole (line breaks flattened to spaces).
 
-**How I labelled them:** <!-- Cold first? Pre-labelled with AI and corrected?
-Say so plainly — the disclosure is required, not penalised. -->
+- **32 rows** I copied by hand while reading the subreddit.
+- **118 rows** came from [Arctic Shift](https://arctic-shift.photon-reddit.com),
+  a public Reddit archive, because Reddit blocks automated access. I pulled the
+  newest 100 posts and newest 100 comments (all from 25 October 2026). Posts
+  are stored as `Title: body`, or just the title for link posts. Out of 143
+  usable candidates I dropped 25: mod-removed posts and removal notices, one
+  duplicate of a row I already had, image-only titles, product and community
+  ads, and "thanks" replies.
+
+Because the comments come from a single day, many of them are replies inside
+the same few threads (one about Elon Musk saying AI should rule humanity, one
+about LLMs vs. calculators).
+
+**How I labelled them:**
+
+1. **Cold (19 rows).** I labelled these first, with only my definitions and no
+   tools. They are marked `cold` in the note column.
+2. **Pre-labelled (131 rows).** I gave Claude my three definitions and decision
+   rules and had it label the rest. Those rows are marked `pre-labelled`. I
+   then read every one against the decision rules above and corrected it; rows
+   I checked are marked `pre-labelled, checked`. I changed ___ of the 131
+   labels.
 
 **Counts per label:**
 
 | Label | Count | Share |
 |---|---|---|
-|  |  |  |
-|  |  |  |
-|  |  |  |
-| **Total** |  | 100% |
+| `hot_take` | 71 | 47% |
+| `reaction` | 42 | 28% |
+| `grounded` | 37 | 25% |
+| **Total** | 150 | 100% |
+
+No label is above 70%, and `hot_take` is under my 50% cap from criterion 4.
+`grounded` is 3 short of the 40-post floor in that criterion, so it is the label
+I need more of. It is also the label that matters most: most of the subreddit is
+opinion, and a post with a checkable detail is the rarer thing.
 
 **Three hard cases**
 
-<!-- Any post that made you pause: what it was, which two labels it could have
-     been, and what you chose. These are worth more than the easy 190. -->
-
 **1.**
-> *The post:*
+> *The post:* "We're only a couple years into this and AI has already solved
+> over 300 math problems, many that mathematicians once thought would be
+> impossible. Most famously the Navier-Stokes Equation. PHP2Shell is a
+> vulnerability AI found that affects 70% of all websites in the world..."
 >
-> *Could have been:*
+> *Could have been:* `grounded` or `hot_take`
 >
-> *I chose, because:*
+> *I chose `grounded`, because:* my rule asks whether a reader could check the
+> detail, not whether it is true. "300 math problems", "Navier-Stokes" and
+> "70% of websites" are all things a reader can look up, and the claim leans on
+> them. Some of them look wrong, but a wrong checkable claim is still a checkable
+> claim. This is the case where my taxonomy measures *form*, not accuracy.
 
 **2.**
-> *The post:*
+> *The post:* "I'm a developer and bought a Mini AI 'Supercomputer' with little
+> idea how to use it... I told my agent that they needed some hobbies and gave
+> it a website that it would update by itself. It actually came up with it's
+> own hobbies... It was beautiful and strange..."
 >
-> *Could have been:*
+> *Could have been:* `grounded` or `reaction`
 >
-> *I chose, because:*
+> *I chose `reaction`, because:* it is a first-hand account, which my
+> `grounded` definition counts as support. But it isn't supporting a claim about
+> AI; it's describing what happened to the poster and how it felt ("beautiful
+> and strange", "I like learning and I guess I'm a nerd"). Something specific
+> happened to the poster and the post is mostly feeling, so it is a `reaction`.
 
 **3.**
-> *The post:*
+> *The post:* "i am tired of re-teaching codebase rules every morning: For a
+> long time, my biggest frustration with coding models has not been raw
+> intelligence, but the fact that every single session starts from zero..."
 >
-> *Could have been:*
+> *Could have been:* `reaction` or `hot_take`
 >
-> *I chose, because:*
+> *I chose `reaction`, because:* the title is pure frustration, and it comes
+> from something that keeps happening to the poster in their own work, not from
+> AI in general. My second rule wants a specific triggering event, and "every
+> morning" is a repeated event rather than a single one, which is why I paused.
+> I decided a recurring personal experience still counts as the trigger. If it
+> had said "coding models are useless because they forget everything" with no
+> "I", it would be a `hot_take`.
 
 ---
 

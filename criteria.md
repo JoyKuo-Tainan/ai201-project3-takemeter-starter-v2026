@@ -51,63 +51,68 @@ whether you hit them:
 
 ---
 
-## 1.
+## 1. Overall accuracy
 
-<!-- Your criterion. It must name a number. -->
+Overall accuracy on the held-out test split is **at least 0.70 on each of the
+three seeds**.
 
-
-
-**Why this target:**
-
-
-
----
-
-## 2.
-
-<!-- Your criterion. -->
-
-
-
-**Why this target:**
-
-
+**Why this target:** With three labels a random guesser gets about 0.33, and the
+70/15/15 split of ~200 posts leaves only about 30 test posts, so each post is
+worth ~3 points of accuracy. 0.70 means getting roughly 21 of 30 right on every
+seed, which is clearly useful for sorting r/ArtificialInteligence takes but
+leaves room for the fuzzy `grounded`/`hot_take` posts I expect it to miss.
 
 ---
 
-## 3.
+## 2. `grounded` and `hot_take` each perform well
 
-<!-- Your criterion. -->
+`grounded` and `hot_take` each have an F1 of **at least 0.65 on each of the
+three seeds**.
 
-
-
-**Why this target:**
-
-
-
----
-
-## 4.
-
-<!-- Your criterion. -->
-
-
-
-**Why this target:**
-
-
+**Why this target:** These are the two labels I expect to have the most
+examples, since most posts in my scope are opinions about AI, so their scores
+should be the most stable. They are also my hardest boundary — the "could a
+reader check the detail?" rule — so a model that can't separate them at 0.65
+hasn't learned the main thing the taxonomy is for.
 
 ---
 
-## 5.
+## 3. `reaction` is allowed to be worse, but not useless
 
-<!-- Your criterion. -->
+`reaction` has an F1 of **at least 0.50 on each of the three seeds**.
 
+**Why this target:** I expect `reaction` to be my smallest label, because
+r/ArtificialInteligence is mostly arguments and posts like "my art mentor just
+got fired" are less common. With maybe 6–8 `reaction` posts in a test split, one
+mistake moves F1 a lot, so I set it 0.15 looser than the other two. Still, 0.50
+is well above what you'd get by ignoring the label, which would be 0.
 
+---
 
-**Why this target:**
+## 4. Label balance
 
+In my 200 labels, **every label has at least 20% of the posts (40 or more), and
+no label has more than 50%**.
 
+**Why this target:** Below 40 posts, a label gets about 6 in the test split and
+its F1 becomes mostly noise between seeds, which would make criterion 3
+impossible to judge. Capping the biggest label at 50% keeps criterion 1
+meaningful: if `hot_take` were 70% of my data, a model that always said
+`hot_take` would pass 0.70 accuracy without learning anything.
+
+---
+
+## 5. Labelling consistency
+
+On the 30-post staff agreement set, I match the staff labels on **at least 24 of
+30 posts (80%)**.
+
+**Why this target:** The staff taxonomy (`analysis` / `hot_take` / `reaction`)
+is almost the same as mine and has the same hard boundary — whether a fact
+"does work" in the argument — so if I can't apply it 80% of the time, my own
+200 labels probably aren't consistent either. It also sits above my 0.70
+accuracy target on purpose: the model can't be expected to agree with my labels
+more often than a careful human agrees with someone else's.
 
 ---
 
