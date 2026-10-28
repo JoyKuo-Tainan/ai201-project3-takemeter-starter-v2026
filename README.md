@@ -39,9 +39,13 @@
 
 ## What This Does
 
-<!-- Your community, and what your classifier sorts posts into. Three or four
-     sentences. -->
-
+TakeMeter reads posts and comments from r/ArtificialInteligence and sorts each
+one by how its claim about AI is made. A `grounded` post backs its claim with
+something a reader could check: a number, a first-hand test, a named source, or
+a concrete detail from the poster's own work. A `hot_take` asserts a confident
+claim with no support, and a `reaction` is a personal emotional response to
+something that just happened to the poster. The classifier judges the form of
+the argument, not whether the claim is true.
 
 
 ---
@@ -284,16 +288,16 @@ thing next unit has to explain.
   the 131 posts I hadn't labelled cold.
 - *What came back:* a label for every row: 37 `grounded`, 71 `hot_take` and
   42 `reaction` across the full 150 once my cold rows were added.
-- *What I changed:* TODO: name one or two specific labels you overturned and
+- *What I changed:* name one or two specific labels you overturned and
   which rule decided it, and fill in the count in The Dataset ("I changed ___
   of the 131").
 
 **Moment 2: collecting posts from Arctic Shift**
 
-- *What I asked for:* TODO: confirm what you asked AI for here. For example,
+- *What I asked for:* confirm what you asked AI for here. For example,
   how to get posts out of Reddit when it blocks automated access, or a script
   to pull the newest 100 posts and 100 comments from Arctic Shift.
-- *What came back:* TODO: what it suggested or wrote.
+- *What came back:* what it suggested or wrote.
 - *What I changed:* I didn't keep everything it pulled. Out of 143 usable
   candidates I dropped 25: mod-removed posts and removal notices, a duplicate
   of a row I already had, image-only titles, ads, and "thanks" replies, because
@@ -319,19 +323,52 @@ my decision rules and corrected the ones I disagreed with.
 
 | Measure | Baseline | Trained | Difference |
 |---|---|---|---|
-| Overall accuracy |  |  |  |
-| Macro F1 |  |  |  |
-| F1 — `label_one` |  |  |  |
-| F1 — `label_two` |  |  |  |
+| Overall accuracy | 0.522 | 0.478 | -0.043 |
+| Macro F1 | 0.508 | 0.216 | -0.292 |
+| F1 — `grounded` | 0.600 | 0.000 | -0.600 |
+| F1 — `hot_take` | 0.308 | 0.647 | +0.339 |
+| F1 — `reaction` | 0.615 | 0.000 | -0.615 |
 
 **What I predicted before I looked:**
-<!-- Milestone 1 asks you to write this BEFORE seeing the trained numbers. A
-     prediction made afterwards isn't one. -->
+
+
+I predict my trained model will beat the baseline on overall accuracy and on
+`hot_take` F1, because it learned from 49 `hot_take` training posts (nearly half
+my training data) and leans toward that label, while the zero-shot baseline has
+never seen a post from this subreddit and spreads its guesses across all three
+labels.
 
 **What the gap actually means:**
 <!-- If the baseline matched your trained model, your fine-tuning added
      nothing — and that is a real finding, not a failure. Say it plainly. -->
 
+My fine-tuning added nothing. The zero-shot baseline, which never saw one of my
+posts, beat my trained model on accuracy (0.522 vs. 0.478) and by a wide margin
+on macro F1 (0.508 vs. 0.216). My prediction was half right: the trained model
+did win on `hot_take` F1 (+0.339), but it lost on accuracy. And the `hot_take`
+win isn't something it learned. It predicted `hot_take` for all 23 test posts,
+so it gets every real `hot_take` right for free and every other post wrong. The
+baseline at least tries all three labels: it found all 6 `grounded` posts, but
+it over-uses that label, calling 6 of the 11 `hot_take` posts `grounded` too.
+
+**What my definitions were worth:** I ran the baseline a second time with bare
+label names instead of my definitions (`--definitions none.txt`, saved to
+`baseline_bare_names.json`).
+
+| Measure | With definitions | Bare names | Difference |
+|---|---|---|---|
+| Overall accuracy | 0.522 | 0.478 | +0.043 |
+| Macro F1 | 0.508 | 0.393 | +0.115 |
+| F1 — `grounded` | 0.600 | 0.000 | +0.600 |
+| F1 — `hot_take` | 0.308 | 0.609 | −0.301 |
+| F1 — `reaction` | 0.615 | 0.571 | +0.044 |
+
+My definitions are worth 0.115 macro F1, and almost all of it comes from
+`grounded`. With just the word "grounded" the model got none of those 6 posts
+right. With my definition ("supports it with something specific and
+checkable") it got all 6. The cost is `hot_take`: the definition pulls posts
+toward `grounded`, so its `hot_take` F1 drops by 0.301. The table above uses the
+run with definitions.
 
 
 ---
