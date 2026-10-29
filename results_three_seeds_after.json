@@ -1,0 +1,164 @@
+[
+  {
+    "seed": 42,
+    "n_test": 23,
+    "accuracy": 0.6521739130434783,
+    "f1_macro": 0.5950617283950617,
+    "per_label": {
+      "grounded": {
+        "precision": 0.75,
+        "recall": 0.5,
+        "f1": 0.6,
+        "support": 6
+      },
+      "hot_take": {
+        "precision": 0.625,
+        "recall": 0.9090909090909091,
+        "f1": 0.7407407407407407,
+        "support": 11
+      },
+      "reaction": {
+        "precision": 0.6666666666666666,
+        "recall": 0.3333333333333333,
+        "f1": 0.4444444444444444,
+        "support": 6
+      }
+    },
+    "confusion": {
+      "grounded": {
+        "grounded": 3,
+        "hot_take": 3,
+        "reaction": 0
+      },
+      "hot_take": {
+        "grounded": 0,
+        "hot_take": 10,
+        "reaction": 1
+      },
+      "reaction": {
+        "grounded": 1,
+        "hot_take": 3,
+        "reaction": 2
+      }
+    },
+    "confidence": {
+      "mean_when_right": 0.604884147644043,
+      "mean_when_wrong": 0.48871153593063354,
+      "accuracy_most_confident_third": 0.8571428571428571,
+      "accuracy_least_confident_third": 0.2857142857142857,
+      "n_per_third": 7
+    },
+    "device": "mps",
+    "device_name": "Apple Silicon GPU (MPS)",
+    "torch_version": "2.14.1",
+    "max_length": 128
+  },
+  {
+    "seed": 7,
+    "n_test": 23,
+    "accuracy": 0.6956521739130435,
+    "f1_macro": 0.6285714285714286,
+    "per_label": {
+      "grounded": {
+        "precision": 0.75,
+        "recall": 0.5,
+        "f1": 0.6,
+        "support": 6
+      },
+      "hot_take": {
+        "precision": 0.6470588235294118,
+        "recall": 1.0,
+        "f1": 0.7857142857142857,
+        "support": 11
+      },
+      "reaction": {
+        "precision": 1.0,
+        "recall": 0.3333333333333333,
+        "f1": 0.5,
+        "support": 6
+      }
+    },
+    "confusion": {
+      "grounded": {
+        "grounded": 3,
+        "hot_take": 3,
+        "reaction": 0
+      },
+      "hot_take": {
+        "grounded": 0,
+        "hot_take": 11,
+        "reaction": 0
+      },
+      "reaction": {
+        "grounded": 1,
+        "hot_take": 3,
+        "reaction": 2
+      }
+    },
+    "confidence": {
+      "mean_when_right": 0.6012828350067139,
+      "mean_when_wrong": 0.5193901658058167,
+      "accuracy_most_confident_third": 0.8571428571428571,
+      "accuracy_least_confident_third": 0.5714285714285714,
+      "n_per_third": 7
+    },
+    "device": "mps",
+    "device_name": "Apple Silicon GPU (MPS)",
+    "torch_version": "2.14.1",
+    "max_length": 128
+  },
+  {
+    "seed": 2024,
+    "n_test": 23,
+    "accuracy": 0.4782608695652174,
+    "f1_macro": 0.29838709677419356,
+    "per_label": {
+      "grounded": {
+        "precision": 0.5,
+        "recall": 0.16666666666666666,
+        "f1": 0.25,
+        "support": 6
+      },
+      "hot_take": {
+        "precision": 0.5,
+        "recall": 0.9090909090909091,
+        "f1": 0.6451612903225806,
+        "support": 11
+      },
+      "reaction": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 6
+      }
+    },
+    "confusion": {
+      "grounded": {
+        "grounded": 1,
+        "hot_take": 5,
+        "reaction": 0
+      },
+      "hot_take": {
+        "grounded": 0,
+        "hot_take": 10,
+        "reaction": 1
+      },
+      "reaction": {
+        "grounded": 1,
+        "hot_take": 5,
+        "reaction": 0
+      }
+    },
+    "confidence": {
+      "mean_when_right": 0.6677830219268799,
+      "mean_when_wrong": 0.5619930624961853,
+      "accuracy_most_confident_third": 0.7142857142857143,
+      "accuracy_least_confident_third": 0.2857142857142857,
+      "n_per_third": 7
+    },
+    "device": "mps",
+    "device_name": "Apple Silicon GPU (MPS)",
+    "torch_version": "2.14.1",
+    "max_length": 128
+  }
+]

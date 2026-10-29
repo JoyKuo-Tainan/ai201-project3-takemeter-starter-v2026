@@ -303,6 +303,41 @@ thing next unit has to explain.
   of a row I already had, image-only titles, ads, and "thanks" replies, because
   none of them is a take under my scope rule.
 
+**Moment 3 (unit 6): adjudicating the staff disagreements and finding the
+pattern**
+
+- *What I asked for:* I gave Claude my 3 disagreements from
+  `agreement_results.json` and asked it to write up each call from
+  `data/staff_taxonomy.md`. On #1 I had already decided staff was right
+  (the fact carries the argument, whatever its strength). On #2 I disagreed
+  with staff, because I thought "the shoe rules changed" carried the
+  argument. On #3 I asked what it thought.
+- *What came back:* It wrote up #1 and #2 from my reasoning. For #2 it found
+  the structural argument (fact, then "so", then conclusion, the same shape as
+  the staff's own `analysis` example) and named the strongest point against
+  me. On #3 it argued that staff was right: "before 90 minutes" is part of the
+  claim, not evidence for it. It also pointed out the pattern across all three:
+  every disagreement was on `analysis` vs `hot_take`, and my errors went both
+  ways, because I was asking "is this convincing?" or "is there a number?"
+  instead of "does the fact carry the argument?"
+- *What I changed:* On #3 I dropped my `analysis` call and accepted that I'd
+  applied Rule 1 loosely (pile a). I used the pattern as evidence in my
+  Diagnoses. Because none of my disagreements involved `reaction`, labelling
+  couldn't explain `reaction` failing completely, which pointed the
+  diagnosis at training rather than relabelling.
+
+**Moment 4 (unit 6): the improvement run**
+
+- *What I asked for:* help picking the improvement and running it.
+- *What came back:* Claude pointed out that 104 posts at batch size 16 for 3
+  epochs is only about 21 training updates, suggested raising `EPOCHS` to 10
+  as the one change, and ran section 6 with `RUN_LABEL = "after"`. Running the
+  notebook also re-ran section 5, which overwrote my unit 5 `results.json` and
+  `test_split.csv`, so it restored both from git.
+- *What I changed:* I kept it to one change, even though the diagnosis also
+  pointed at collecting more `grounded` posts. I reported that the change
+  didn't flip any verdict instead of only highlighting seeds 42 and 7.
+
 **Pre-labelling disclosure:** 131 of my 150 rows (87%) were pre-labelled by
 Claude from my written definitions and decision rules. They are marked
 `pre-labelled` in the `note` column. The other 19 rows, marked `cold`, I
@@ -380,11 +415,16 @@ run with definitions.
 
 | Criterion | Target | Seed 42 | Seed 7 | Seed 2024 | Verdict |
 |---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |
+| 1. Overall accuracy | ≥ 0.70 on each seed | 0.478 | 0.478 | 0.478 | MISSED |
+| 2. `grounded` and `hot_take` F1 | each ≥ 0.65 on each seed | 0.000 / 0.647 | 0.000 / 0.647 | 0.000 / 0.647 | MISSED |
+| 3. `reaction` F1 | ≥ 0.50 on each seed | 0.000 | 0.000 | 0.000 | MISSED |
+| 4. Label balance | every label ≥ 20% (40+ posts), none > 50% | 37 / 71 / 42 | 37 / 71 / 42 | 37 / 71 / 42 | MISSED |
+| 5. Labelling consistency | ≥ 24/30 (80%) on the staff set | 27/30 | 27/30 | 27/30 | MET |
+
+Criterion 2 is shown as `grounded` / `hot_take`. Criterion 4 is
+`grounded` / `hot_take` / `reaction` counts out of 150. Criteria 4 and 5 come
+from `labels.csv` and `agreement_results.json`, so they don't change with the
+seed.
 
 ### Confusion matrix
 
@@ -418,11 +458,11 @@ every post in the majority label.
 
 | # | Criterion | Target | Verdict | How I decided |
 |---|---|---|---|---|
-| 1 |  |  |  |  |
-| 2 |  |  |  |  |
-| 3 |  |  |  |  |
-| 4 |  |  |  |  |
-| 5 |  |  |  |  |
+| 1 | Overall accuracy | ≥ 0.70 on each seed | MISSED | 0.478 on all three seeds, which is 11/23, exactly the `hot_take` share of the test split |
+| 2 | `grounded` and `hot_take` F1 | each ≥ 0.65 on each seed | MISSED | `hot_take` 0.647 just misses, and `grounded` is 0.000 on every seed |
+| 3 | `reaction` F1 | ≥ 0.50 on each seed | MISSED | 0.000 on every seed: the model never predicted `reaction` |
+| 4 | Label balance | every label ≥ 20% (40+ posts), none > 50% | MISSED | `hot_take` 47% passes the cap and `grounded` is 25% of the posts, but only 37 posts, under the 40 floor. The criterion was written for 200 labels and I have 150 |
+| 5 | Labelling consistency | ≥ 24/30 (80%) on the staff set | MET | 27/30 = 90% from `agreement_results.json` |
 
 **Diagnoses**
 
@@ -434,6 +474,47 @@ every post in the majority label.
      ⚠️ Use your agreement report as evidence. It is the only instrument you
      have that can tell a LABELLING problem from a MODEL problem, and this
      section is graded on whether you used it that way. -->
+
+Misses 1, 2 and 3 have one shared cause, and miss 4 has its own.
+
+**Criteria 1, 2 and 3: the model can't learn from this much data.** On all
+three seeds the model predicted `hot_take` for every one of the 23 test posts.
+My matrix shows all 6 `grounded` and all 6 `reaction` posts going to
+`hot_take`, and nothing going the other way. Every accuracy and F1 in the run
+log follows from that: 0.478 accuracy is just the `hot_take` share, and the
+other two labels score 0 because they are never predicted. Three things tell
+me this is the model and the amount of data, not my labelling:
+
+- **The agreement report rules out `reaction`.** All 3 of my disagreements
+  with staff were on `analysis` vs `hot_take`, and none involved `reaction`. I
+  applied the `reaction` boundary the same way staff did every time, yet
+  `reaction` failed exactly as badly as `grounded`. Inconsistent labels can't
+  explain a boundary I labelled consistently.
+- **The labels can be learned from the text.** The zero-shot baseline, given
+  only my definitions, scored F1 0.600 on `grounded` and 0.615 on `reaction`
+  on the same test posts. So the information is there in the posts. My
+  trained model just didn't pick it up.
+- **The model barely trained.** 104 training posts at batch size 16 is 7
+  steps per epoch, so 3 epochs is only about 21 updates. The model's average
+  confidence was 0.45–0.48 when right and 0.42–0.46 when wrong, barely above
+  the 0.33 of a uniform guess over three labels. The seeds also gave different
+  test splits but identical results, so the output doesn't depend on which
+  posts it sees. It learned the majority label and nothing else.
+
+My labelling isn't completely in the clear on `grounded`. Two of my three
+disagreements were pile (a) on the boundary that matches my `grounded` vs
+`hot_take`, so some of my `grounded` labels are probably noisy. But noise at
+the level of 27/30 would blur that boundary, not produce a model that never
+predicts `grounded` and never predicts `reaction`. So the main cause is the
+amount of data and training, and inconsistent labelling at most makes
+`grounded` a bit worse.
+
+**Criterion 4: too few `grounded` examples, a data collection problem.** I
+collected 150 posts instead of 200, and `grounded` came out at 37, three
+under the floor. I know this from the counts in `labels.csv`. It is also part
+of why criteria 1–3 failed: 25 `grounded` training posts is the smallest
+training set of the three labels, and with 6 test posts per label one post
+moves recall by about 17 points.
 
 
 
@@ -566,24 +647,65 @@ every time.
 
 ## The Improvement
 
-**What I changed:**
+**What I changed:** One training setting: `EPOCHS` from 3 to 10. Everything
+else is the same: the same 150 labels, learning rate 2e-5, batch size 16, max
+length 128, and the same three seeds (42, 7, 2024) on the same Apple Silicon
+GPU (MPS).
 
-**Which diagnosis pointed at it:**
+**Which diagnosis pointed at it:** The diagnosis for criteria 1–3. With 104
+training posts at batch size 16, 3 epochs is only about 21 updates. The model
+predicted `hot_take` for every post with confidence around 0.45, barely above
+a uniform guess. My agreement report ruled out labelling as the main cause:
+`reaction` failed completely even though I never disagreed with staff on it.
+So the change to make was training, not relabelling. 10 epochs is about 70
+updates.
 
 ### Run Log — After
 
 | Criterion | Target | Seed 42 | Seed 7 | Seed 2024 | Verdict |
 |---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |
+| 1. Overall accuracy | ≥ 0.70 on each seed | 0.652 | 0.696 | 0.478 | MISSED |
+| 2. `grounded` and `hot_take` F1 | each ≥ 0.65 on each seed | 0.600 / 0.741 | 0.600 / 0.786 | 0.250 / 0.645 | MISSED |
+| 3. `reaction` F1 | ≥ 0.50 on each seed | 0.444 | 0.500 | 0.000 | MISSED |
+| 4. Label balance | every label ≥ 20% (40+ posts), none > 50% | 37 / 71 / 42 | 37 / 71 / 42 | 37 / 71 / 42 | MISSED |
+| 5. Labelling consistency | ≥ 24/30 (80%) on the staff set | 27/30 | 27/30 | 27/30 | MET |
+
+Results are in `results_three_seeds_after.json`. Criteria 4 and 5 don't
+depend on training, so they are unchanged.
 
 **Did it help, and how do I know:**
 
-<!-- If it didn't, say so. Relabelling that didn't help is a genuinely
-     interesting result and earns full credit. -->
+It helped, but it didn't flip a single verdict. Every criterion that was
+MISSED before is still MISSED.
+
+| Measure | Before (3 epochs), every seed | After (10 epochs): 42 / 7 / 2024 |
+|---|---|---|
+| Overall accuracy | 0.478 | 0.652 / 0.696 / 0.478 |
+| Macro F1 | 0.216 | 0.595 / 0.629 / 0.298 |
+| F1 — `grounded` | 0.000 | 0.600 / 0.600 / 0.250 |
+| F1 — `hot_take` | 0.647 | 0.741 / 0.786 / 0.645 |
+| F1 — `reaction` | 0.000 | 0.444 / 0.500 / 0.000 |
+
+On seeds 42 and 7 the model now actually uses all three labels. Seed 7 came
+within one post of the accuracy target (0.696 vs. 0.70), and its `reaction`
+F1 hit 0.500 exactly. The model's confidence now means something too: on seed
+42 its most confident third of predictions was 86% right and its least
+confident third 29%. Before, every prediction sat around 0.45. That confirms
+the diagnosis: the model was under-trained, and more updates let it learn
+something.
+
+Seed 2024 barely moved. Accuracy is still 0.478 and the model called 20 of
+the 23 test posts `hot_take`, so `reaction` is still at 0. Accuracy spread
+0.217 across the three seeds, which means the score depends heavily on which
+posts land in the split. With 6 `grounded` and 6 `reaction` posts in each
+test set, one post moves either label's F1 a lot. More epochs fixed the
+training problem. What's left is the too-few-examples problem from criterion
+4.
+
+The leftover errors still point one way. On seed 42, 3 `grounded` posts were
+called `hot_take` and none went the other way, and 3 `reaction` posts were
+called `hot_take`. `hot_take` is still where the model sends anything it's
+unsure of, which is what I'd expect when it's 47% of the training data.
 
 
 
@@ -593,11 +715,46 @@ every time.
 
 <!-- For each criterion still missed: what you'd do, and why you stopped. -->
 
+Criteria 1–4 are still missed after the 10-epoch run. I stopped after one
+change because the improvement step allows one, and I wanted the before/after
+comparison to show what that change did on its own.
 
+**Criterion 4 (label balance), the one I'd fix first.** `grounded` is 37
+posts, 3 under the floor, and I have 150 labels instead of the 200 the
+criterion was written for. I'd collect about 50 more posts, aiming for
+`grounded` first, and take them from several different days on Arctic Shift.
+All my scraped rows come from one day, so many are replies inside the same
+few threads. This is a collection fix, not a training fix, so the one-change
+rule kept it out of this round.
+
+**Criterion 1 (accuracy ≥ 0.70) and criterion 3 (`reaction` F1 ≥ 0.50).**
+Seed 7 got to 0.696 and 0.500, so these are close on a friendly split. Seed
+2024 is still at 0.478 and 0.000, and that seed is what fails them. Accuracy
+spread 0.217 across seeds, and with 6 `reaction` posts per test split one post
+moves `reaction` F1 by a lot. More posts (the criterion 4 fix) is what would
+make these hold on every seed. A different training setting wouldn't fix a
+test split of 23 posts.
+
+**Criterion 2 (`grounded` and `hot_take` F1 ≥ 0.65).** `grounded` reached
+0.600 on two seeds and 0.250 on the third, and its errors all go to
+`hot_take`. Besides more `grounded` examples, I'd re-check the
+`grounded`/`hot_take` boundary in my 131 pre-labelled rows against one
+question: does the detail carry the argument? My agreement report showed I
+applied the matching staff rule loosely in two of three disagreements (pile
+a), once by judging how strong the evidence was and once by treating any
+number as a fact. That relabelling would be a second change, so I didn't do it
+this round.
 
 **The gap between what I meant my labels to capture and what the model
 learned:**
 <!-- Two sentences. Your confusion matrix is the evidence. -->
+
+I meant `grounded` vs `hot_take` to be about whether a checkable detail
+carries the argument, and `reaction` to be about a specific event that just
+happened to the poster. What the model learned is closer to "call it
+`hot_take` unless you're sure". Even after 10 epochs, on seed 42 half the real
+`grounded` posts (3 of 6) and half the real `reaction` posts (3 of 6) went to
+`hot_take`, while not one real `hot_take` was called `grounded`.
 
 
 
