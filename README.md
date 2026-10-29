@@ -391,16 +391,21 @@ run with definitions.
 <!-- ⚠️ TYPED AS A MARKDOWN TABLE. The notebook prints one ready to paste.
      An image of a matrix earns nothing. -->
 
-| true \ predicted |  |  |  |
+| true \ predicted | grounded | hot_take | reaction |
 |---|---|---|---|
-| **** |  |  |  |
-| **** |  |  |  |
-| **** |  |  |  |
+| **grounded** | 0 | 6 | 0 |
+| **hot_take** | 0 | 11 | 0 |
+| **reaction** | 0 | 6 | 0 |
 
 **My biggest off-diagonal number, and what it means:**
 <!-- Not "the model made mistakes" — WHICH boundary it didn't learn, and which
      direction. "7 real analysis posts were called hot_take and only 3 went the
      other way" is a direction, not just an error rate. -->
+
+My biggest off-diagonal number is a tie of 6 and 6: all 6 real `grounded` posts
+and all 6 real `reaction` posts were called `hot_take`, and nothing went the
+other way, so the model learned neither boundary with `hot_take` and just put
+every post in the majority label.
 
 
 
@@ -442,7 +447,7 @@ run with definitions.
      data/staff_taxonomy.md, not your own — so every argument below is made
      from those definitions and those decision rules. -->
 
-**Agreement rate:** ___ / 30 = ___%
+**Agreement rate:** 27 / 30 = 90%
 
 <!-- Nobody grades this number. A 60% who argues every disagreement from the
      stated rules beats a 95% who wrote "staff was right" nine times. Several
@@ -466,23 +471,94 @@ run with definitions.
 
 **1.**
 > *The post:*
->
+>Three of us ran the same session on the same day, different shoes, within 10 seconds of each other over 5 miles. I'm not saying shoes do nothing, but whatever they do was smaller than the noise between three people.
 > *Staff said / I said:*
->
+>| `analysis` | `hot_take` |
 > *My call, and why:*
+> Staff is right. Rule 1 asks whether the fact carries the argument, not
+> whether the fact is strong enough to prove it. Here it does: "within 10
+> seconds of each other over 5 miles" is the whole reason for the conclusion,
+> and without it there is no argument left. Three runners on one day is a weak
+> test, and I let that push me to `hot_take`. But a small sample is still a
+> checkable, load-bearing fact, and the post even scales its claim to fit the
+> evidence ("I'm not saying shoes do nothing"). Rule 1 doesn't ask me to grade
+> the evidence, so this is `analysis`.
 >
 > *Which pile:*
-
+> (a) the rule covered it and I applied it loosely
 **2.**
 > *The post:*
->
+>Times are down about 3% since the shoe rules changed, so obviously the shoes are the whole story and the sport has a problem.
 > *Staff said / I said:*
->
+>| `hot_take` | `analysis` |
 > *My call, and why:*
+> I think I'm right. Staff read the 3% as decoration and "so obviously" as the
+> real reason. But Rule 1 asks whether the fact carries the argument, and here
+> the post's own structure says it does: fact first ("times are down about 3%
+> since the shoe rules changed"), then "so", then the conclusion. That is the
+> same shape as the staff's own `analysis` example ("Times are down 3% since
+> 2017, and the shoe rule changed in 2017. That's the most likely single
+> cause."). The checkable part is the timing (times fell after the rule
+> changed), and take that away and the claim about shoes has nothing behind
+> it. The staff's `hot_take` example works the other way round: it states the
+> conclusion first ("Super shoes have ruined racing") and adds the number
+> afterwards as a flourish. The strongest point for staff is that "the whole
+> story" and "the sport has a problem" claim more than one 3% drop can show.
+> But that makes the argument overconfident, not unsupported, and Rule 1 asks
+> whether the fact is load-bearing, not whether the conclusion is
+> proportionate.
 >
 > *Which pile:*
+> (c) the rule is ambiguous here and my reading is defensible. Rule 1 doesn't
+> say whether an overstated conclusion turns a load-bearing fact into
+> decoration.
+
+**3.**
+> *The post:*
+>If you need a gel before 90 minutes you have a fuelling problem, not an energy problem.
+> *Staff said / I said:*
+>| `hot_take` | `analysis` |
+> *My call, and why:*
+> Staff is right. I took "before 90 minutes" as the checkable fact, but it is
+> part of the claim, not evidence for it. It's the writer's own cut-off, and
+> the post never says why the line sits at 90 minutes or why needing a gel
+> earlier means a fuelling problem rather than an energy one. The `analysis`
+> definition asks for a stat, date, time, quote or named comparison that does
+> work in the argument, and 90 minutes is a time, but it isn't an observation
+> anyone could look up the way "times are down 3% since 2017" is. With no
+> support behind it, this matches the `hot_take` definition almost word for
+> word: "a confident claim with no support offered. It might be true. It isn't
+> argued."
+>
+> *Which pile:*
+> (a) the rule covered it and I applied it loosely. A number was present, so
+> the post felt checkable, but Rule 1 asks whether a fact carries the
+> argument, and this number is the conclusion itself.
 
 **What the pattern in my disagreements tells me:**
+
+All three disagreements sit on the same boundary, `analysis` vs `hot_take`,
+and I never disagreed with staff about `reaction`. In each one I judged the
+evidence by something Rule 1 doesn't ask about. In #1 I asked whether the test
+was strong enough to convince me, and called a load-bearing fact a `hot_take`
+because three runners felt like too few. In #3 the post had a number in it, so
+I called it `analysis` even though the number was part of the conclusion. #2
+I still think is a defensible `analysis`, but it went the same way: a number
+pulled me toward `analysis`. So I'm not consistently too strict or too loose.
+My mistakes go both ways because I'm answering the wrong question ("is this
+convincing?" or "is there a number?") instead of "does the fact carry the
+argument?"
+
+This matters for my own data because `analysis` vs `hot_take` is the same
+boundary as my `grounded` vs `hot_take`, which I already named as my hardest.
+Two of my three disagreements were pile (a), so some of my own `grounded`
+and `hot_take` labels probably have the same inconsistency, especially among
+the 131 pre-labelled rows, where I was checking Claude's call rather than
+making my own. But 27/30 (90%) is high, and my errors are confined to one
+boundary. Labelling noise of that size would blur the `grounded`/`hot_take`
+line. It can't explain a model that predicts `hot_take` for every post,
+including all 6 `reaction` posts, a boundary I applied the same way staff did
+every time.
 
 
 
